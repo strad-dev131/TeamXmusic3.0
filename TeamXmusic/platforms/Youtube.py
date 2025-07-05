@@ -18,6 +18,7 @@ import base64
 from TeamXmusic import LOGGER
 from TeamXmusic.utils.database import is_on_off
 from TeamXmusic.utils.formatters import time_to_seconds
+from TeamXmusic.utils.cache import async_cache
 from config import YT_API_KEY, YTPROXY_URL as YTPROXY
 
 logger = LOGGER(__name__)
@@ -215,6 +216,7 @@ class YouTubeAPI:
         else:
             return 0, stderr.decode()
 
+    @async_cache(ttl=3600)
     async def playlist(self, link, limit, user_id, videoid: Union[bool, str] = None):
         if videoid:
             link = self.base + link
