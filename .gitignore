@@ -1,0 +1,13 @@
+.cache
+log.txt
+.DS_Store
+*.session
+raw_files/
+cache/
+downloads/
+__pycache__/
+*.session-journal
+watchdog.log
+.venv/
+logs.txt
+unknown_errors.txt
