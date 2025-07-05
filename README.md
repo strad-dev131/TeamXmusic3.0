@@ -36,6 +36,7 @@
 - ⚙️ **Custom Settings** – Equalizer, volume control, and more.
 - 🍪 **Cookie-free & Error-free Playback**
 - ✅ **API Key Based Access**
+- 🚀 **Playlist Caching** – Frequently used playlists are cached for faster loading.
 ---
 
 ## 🚀 Deploy on Heroku

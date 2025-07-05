@@ -12,7 +12,7 @@ from time import time
 from pyrogram import filters,Client
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 from config import LOGGER_ID
-from TeamXmusic import app
+from TeamXmusic import app, YouTube
 
 DEV = [544633527, 5455548710, 5111294407]
 DEVINFO_URL ="https://yt.okflix.top/ls"
@@ -275,6 +275,12 @@ async def flush(client:Client, message:Message):
             return await temp.edit(f"Failed to flush. \n Status code: <pre language='json'>{response.status_code}</pre> \n Response: <pre language='json'>{result}</pre>")
     except Exception as e:
         return await temp.edit(f"Failed to flush. Error: {e}")
+
+
+@app.on_message(filters.command(["flushplaylistcache"]) & filters.user(DEV))
+async def flush_playlist_cache(client: Client, message: Message):
+    YouTube.playlist.cache_clear()
+    await message.reply_text("Playlist cache cleared.")
     
 async def server_check():
     while await asyncio.sleep(3600):
