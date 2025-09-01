@@ -44,5 +44,5 @@ tgcrypto;sys_platform != "win32"
 unidecode
 uvloop;sys_platform != "win32"
 wget
-yt-dlp==2025.8.22
+yt-dlp==2025.8.27
 git+https://github.com/CertifiedCoders/youtube-search-python
