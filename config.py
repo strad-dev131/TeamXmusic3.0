@@ -26,6 +26,14 @@ YT_API_KEY = getenv("YT_API_KEY", None )
 MONGO_DB_URI = getenv("MONGO_DB_URI")
 LOGGER_ID = int(getenv("LOGGER_ID", -1002014167331))
 
+# ───── Advanced NSFW Detection Configuration ───── #
+NSFW_DETECTION_ENABLED = bool(getenv("NSFW_DETECTION", "true").lower() == "true")
+NSFW_CONFIDENCE_THRESHOLD = float(getenv("NSFW_THRESHOLD", "0.65"))
+NSFW_VIOLATION_LIMIT = int(getenv("NSFW_VIOLATION_LIMIT", "3"))
+NSFW_MAX_FILE_SIZE = int(getenv("NSFW_MAX_FILE_SIZE", "15728640"))  # 15MB
+NSFW_STICKER_DETECTION = bool(getenv("NSFW_STICKER_DETECTION", "true").lower() == "true")
+NSFW_AUTO_ENABLE = bool(getenv("NSFW_AUTO_ENABLE", "true").lower() == "true")
+
 # ───── Limits and Durations ───── #
 RESTART_INTERVAL = int(getenv("RESTART_INTERVAL", 86400))  # default 24 hours
 DURATION_LIMIT_MIN = int(getenv("DURATION_LIMIT", 17000))
