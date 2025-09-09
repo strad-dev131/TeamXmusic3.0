@@ -46,3 +46,10 @@ uvloop;sys_platform != "win32"
 wget
 yt-dlp==2025.8.27
 git+https://github.com/CertifiedCoders/youtube-search-python
+
+# Advanced NSFW Detection Dependencies
+transformers>=4.21.0
+torch>=1.12.0
+torchvision>=0.13.0
+accelerate>=0.20.0
+safetensors>=0.3.0
