@@ -32,7 +32,6 @@ async def init():
     except Exception as e:
         LOGGER("TEAMXMUSIC").warning(f"⚠️ᴄᴏᴏᴋɪᴇ ᴇʀʀᴏʀ: {e}")
 
-
     await sudo()
 
     try:
@@ -50,6 +49,22 @@ async def init():
         importlib.import_module("TEAMXMUSIC.plugins" + all_module)
 
     LOGGER("TEAMXMUSIC.plugins").info("ᴀɴɴɪᴇ's ᴍᴏᴅᴜʟᴇs ʟᴏᴀᴅᴇᴅ...")
+
+    # ✅ Initialize Advanced NSFW Detection System
+    if config.NSFW_DETECTION_ENABLED:
+        try:
+            from TEAMXMUSIC.plugins.tools.nsfw_detector import init_nsfw_detector
+            nsfw_success = await init_nsfw_detector()
+            if nsfw_success:
+                LOGGER("TEAMXMUSIC").info("🛡️ Advanced NSFW Detection: ACTIVE")
+                LOGGER("TEAMXMUSIC").info("🎭 Sticker Protection: ENABLED") 
+                LOGGER("TEAMXMUSIC").info("🎯 Infinity Accuracy Mode: ON")
+            else:
+                LOGGER("TEAMXMUSIC").warning("⚠️ NSFW Detection failed to initialize")
+        except Exception as e:
+            LOGGER("TEAMXMUSIC").warning(f"⚠️ NSFW Detection error: {e}")
+    else:
+        LOGGER("TEAMXMUSIC").info("🔕 NSFW Detection: DISABLED")
 
     await userbot.start()
     await JARVIS.start()
@@ -73,21 +88,6 @@ async def init():
     await userbot.stop()
     LOGGER("TEAMXMUSIC").info("sᴛᴏᴘᴘɪɴɢ ᴀɴɴɪᴇ ᴍᴜsɪᴄ ʙᴏᴛ ...")
 
- # ✅ Initialize Advanced NSFW Detection System
- if config.NSFW_DETECTION_ENABLED:
-     try:
-         from TEAMXMUSIC.plugins.tools.nsfw_detector import init_nsfw_detector
-         nsfw_success = await init_nsfw_detector()
-         if nsfw_success:
-             LOGGER("TEAMXMUSIC").info("🛡️ Advanced NSFW Detection: ACTIVE")
-             LOGGER("TEAMXMUSIC").info("🎭 Sticker Protection: ENABLED") 
-             LOGGER("TEAMXMUSIC").info("🎯 Infinity Accuracy Mode: ON")
-         else:
-             LOGGER("TEAMXMUSIC").warning("⚠️ NSFW Detection failed to initialize")
-     except Exception as e:
-         LOGGER("TEAMXMUSIC").warning(f"⚠️ NSFW Detection error: {e}")
- else:
-     LOGGER("TEAMXMUSIC").info("🔕 NSFW Detection: DISABLED")
 
 if __name__ == "__main__":
     asyncio.get_event_loop().run_until_complete(init())
