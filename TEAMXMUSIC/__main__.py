@@ -1,3 +1,5 @@
+# UPDATED __main__.py for CPU-optimized NSFW detector
+
 import asyncio
 import importlib
 
@@ -50,22 +52,20 @@ async def init():
 
     LOGGER("TEAMXMUSIC.plugins").info("ᴀɴɴɪᴇ's ᴍᴏᴅᴜʟᴇs ʟᴏᴀᴅᴇᴅ...")
 
-    # ✅ Initialize Ultra-Advanced NSFW Detection System
-    if hasattr(config, 'NSFW_DETECTION_ENABLED') and config.NSFW_DETECTION_ENABLED:
-        try:
-            from TEAMXMUSIC.plugins.tools.nsfw_detector import init_nsfw_detector
-            nsfw_success = await init_nsfw_detector()
-            if nsfw_success:
-                LOGGER("TEAMXMUSIC").info("🔥 ULTRA-NSFW DETECTION: ACTIVE")
-                LOGGER("TEAMXMUSIC").info("🎭 Ultra-Sticker Protection: ENABLED") 
-                LOGGER("TEAMXMUSIC").info("⚡ 99% Accuracy Mode: ON")
-                LOGGER("TEAMXMUSIC").info("🚨 6 Detection Strategies: LOADED")
-            else:
-                LOGGER("TEAMXMUSIC").warning("⚠️ NSFW Detection failed to initialize")
-        except Exception as e:
-            LOGGER("TEAMXMUSIC").warning(f"⚠️ NSFW Detection error: {e}")
-    else:
-        LOGGER("TEAMXMUSIC").info("🔕 NSFW Detection: DISABLED")
+    # ✅ Initialize CPU-Optimized NSFW Detection System (VPS-Friendly)
+    try:
+        from TEAMXMUSIC.plugins.tools.nsfw_detector import init_cpu_detector
+        nsfw_success = await init_cpu_detector()
+        if nsfw_success:
+            LOGGER("TEAMXMUSIC").info("🔥 CPU-OPTIMIZED NSFW DETECTION: ACTIVE")
+            LOGGER("TEAMXMUSIC").info("💻 VPS-FRIENDLY MODE: ENABLED") 
+            LOGGER("TEAMXMUSIC").info("🎭 Ultra-Sticker Detection: ON")
+            LOGGER("TEAMXMUSIC").info("⚡ Zero-Tolerance Policy: ACTIVE")
+            LOGGER("TEAMXMUSIC").info("🚨 One-Strike Removal: ENABLED")
+        else:
+            LOGGER("TEAMXMUSIC").warning("⚠️ CPU-NSFW Detection failed to initialize")
+    except Exception as e:
+        LOGGER("TEAMXMUSIC").warning(f"⚠️ CPU-NSFW Detection error: {e}")
 
     await userbot.start()
     await JARVIS.start()
