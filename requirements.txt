@@ -22,7 +22,7 @@ motor
 nekosbest
 numpy
 opencv-python
-pillow==11.3.0
+pillow>=10.0.0
 psutil
 ntgcalls==2.0.6
 py-tgcalls==2.2.8
@@ -47,9 +47,10 @@ wget
 yt-dlp==2025.8.27
 git+https://github.com/CertifiedCoders/youtube-search-python
 
-# Advanced NSFW Detection Dependencies
+# Ultra-Advanced NSFW Detection Dependencies
 transformers>=4.21.0
 torch>=1.12.0
 torchvision>=0.13.0
 accelerate>=0.20.0
 safetensors>=0.3.0
+sentencepiece>=0.1.97
