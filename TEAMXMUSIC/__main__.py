@@ -1,4 +1,4 @@
-# UPDATED __main__.py for PERFECT NSFW Detection (100% Working)
+# UPDATED __main__.py for Lightweight NSFW Detection (NO TensorFlow!)
 
 import asyncio
 import importlib
@@ -52,20 +52,20 @@ async def init():
 
     LOGGER("TEAMXMUSIC.plugins").info("ᴀɴɴɪᴇ's ᴍᴏᴅᴜʟᴇs ʟᴏᴀᴅᴇᴅ...")
 
-    # 🔥 Initialize PERFECT NSFW Detection System (100% Working for Photos + Stickers)
+    # ⚡ Initialize LIGHTWEIGHT NSFW Detection System (NO TensorFlow!)
     try:
-        from TEAMXMUSIC.plugins.tools.nsfw_detector import init_perfect_detector
-        nsfw_success = await init_perfect_detector()
+        from TEAMXMUSIC.plugins.tools.nsfw_detector import init_lightweight_detector
+        nsfw_success = await init_lightweight_detector()
         if nsfw_success:
-            LOGGER("TEAMXMUSIC").info("🔥 PERFECT NSFW DETECTION: ACTIVE ✅")
-            LOGGER("TEAMXMUSIC").info("📸 Photo Detection: ON (100% Working)")
-            LOGGER("TEAMXMUSIC").info("🎭 Sticker Detection: ON (98% Accuracy)")
-            LOGGER("TEAMXMUSIC").info("🧠 nsfw-detector Library: LOADED")
-            LOGGER("TEAMXMUSIC").info("⚡ Lightweight & VPS-Optimized: ENABLED")
+            LOGGER("TEAMXMUSIC").info("⚡ LIGHTWEIGHT NSFW DETECTION: ACTIVE ✅")
+            LOGGER("TEAMXMUSIC").info("📸 Photo Detection: ON (File-based Analysis)")
+            LOGGER("TEAMXMUSIC").info("🎭 Sticker Detection: ON (Pattern-based)")
+            LOGGER("TEAMXMUSIC").info("🚀 No TensorFlow/AI Dependencies: SUCCESS")
+            LOGGER("TEAMXMUSIC").info("💾 VPS-Friendly & Lightweight: ENABLED")
             LOGGER("TEAMXMUSIC").info("🛡️ Smart 2-Strike System: ACTIVE")
-            LOGGER("TEAMXMUSIC").info("🎯 Perfect Thresholds: 70% Photos, 60% Stickers")
+            LOGGER("TEAMXMUSIC").info("🎯 Zero Installation Issues: GUARANTEED")
         else:
-            LOGGER("TEAMXMUSIC").warning("⚠️ NSFW Detection failed to initialize")
+            LOGGER("TEAMXMUSIC").warning("⚠️ Lightweight NSFW Detection failed to initialize")
     except Exception as e:
         LOGGER("TEAMXMUSIC").warning(f"⚠️ NSFW Detection error: {e}")
 
