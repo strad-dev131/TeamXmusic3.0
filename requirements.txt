@@ -49,6 +49,6 @@ yt-dlp==2025.8.27
 git+https://github.com/CertifiedCoders/youtube-search-python
 
 # PERFECT NSFW Detection (WORKING) - Replace the broken transformers dependencies
-nsfw-detector==1.1.0
+nsfw-detector==1.1.1
 tensorflow>=2.8.0
 keras>=2.8.0
