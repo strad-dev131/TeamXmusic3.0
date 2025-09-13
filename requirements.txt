@@ -1,3 +1,4 @@
+# Keep all your existing dependencies
 aiofiles
 aiohttp
 apscheduler
@@ -47,10 +48,7 @@ wget
 yt-dlp==2025.8.27
 git+https://github.com/CertifiedCoders/youtube-search-python
 
-# Ultra-Advanced NSFW Detection Dependencies
-transformers>=4.21.0
-torch>=1.12.0
-torchvision>=0.13.0
-accelerate>=0.20.0
-safetensors>=0.3.0
-sentencepiece>=0.1.97
+# PERFECT NSFW Detection (WORKING) - Replace the broken transformers dependencies
+nsfw-detector==1.1.0
+tensorflow>=2.8.0
+keras>=2.8.0
