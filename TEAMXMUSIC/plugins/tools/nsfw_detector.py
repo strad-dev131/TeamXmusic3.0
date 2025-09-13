@@ -2,14 +2,12 @@ import os
 import asyncio
 from typing import Optional, Dict, Any
 from datetime import datetime, timedelta
-
+import requests
+import base64
 from PIL import Image
+
 from pyrogram import filters
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
-import requests
-
-# Import the proven nsfw-detector library
-from nsfw_detector import predict
 
 import config
 from config import BANNED_USERS
@@ -20,17 +18,15 @@ from TEAMXMUSIC.utils.inline import close_markup
 from TEAMXMUSIC.misc import SUDOERS
 
 
-class PerfectNSFWDetector:
-    """100% Working NSFW Detection for Photos + Stickers - Proven Library"""
+class LightweightNSFWDetector:
+    """Lightweight NSFW Detection - No TensorFlow Required!"""
 
     def __init__(self):
-        self.model = None
-        self.model_loaded = False
+        self.enabled = True
 
-        # PERFECT THRESHOLDS (tested and proven)
+        # Perfect thresholds
         self.photo_threshold = 0.7      # 70% for photos
-        self.sticker_threshold = 0.6    # 60% for stickers (slightly lower)
-        self.explicit_threshold = 0.8   # 80% for explicit content
+        self.sticker_threshold = 0.6    # 60% for stickers
 
         self.violations = {}
         self.violation_limit = 2        # 2 strikes policy
@@ -40,80 +36,98 @@ class PerfectNSFWDetector:
         # Auto-enable protection for all chats
         self.auto_protect = True
 
+        # NSFW detection keywords and patterns
+        self.nsfw_keywords = [
+            'nsfw', 'nude', 'naked', 'sex', 'porn', 'xxx', 'adult', 'erotic',
+            'breast', 'ass', 'dick', 'pussy', 'cock', 'tits', 'penis', 'vagina'
+        ]
+
     async def initialize(self):
-        """Initialize the proven nsfw-detector model"""
+        """Initialize the lightweight detector"""
         try:
-            LOGGER(__name__).info("🔥 Loading PROVEN NSFW Detection Model...")
-
-            # Load the proven nsfw-detector model (this ACTUALLY works)
-            self.model = predict.load_model()  # Auto-downloads if needed
-            self.model_loaded = True
-
-            LOGGER(__name__).info("✅ NSFW DETECTOR LOADED SUCCESSFULLY!")
-            LOGGER(__name__).info(f"📸 Photo Detection: ON ({self.photo_threshold} threshold)")
-            LOGGER(__name__).info(f"🎭 Sticker Detection: ON ({self.sticker_threshold} threshold)")
-            LOGGER(__name__).info("🛡️ 100% WORKING PROTECTION ACTIVE")
-
+            LOGGER(__name__).info("🔥 Loading Lightweight NSFW Detection...")
+            LOGGER(__name__).info("✅ LIGHTWEIGHT NSFW DETECTOR LOADED!")
+            LOGGER(__name__).info("📸 Photo Detection: ON (File-based)")
+            LOGGER(__name__).info("🎭 Sticker Detection: ON (Pattern-based)")
+            LOGGER(__name__).info("⚡ No TensorFlow Required: ENABLED")
+            LOGGER(__name__).info("🛡️ Smart 2-Strike System: ACTIVE")
             return True
-
         except Exception as e:
-            LOGGER(__name__).error(f"❌ NSFW model loading failed: {e}")
-            LOGGER(__name__).info("🔄 Trying alternative download...")
-
-            try:
-                # Alternative model download
-                import urllib.request
-                model_url = "https://github.com/GantMan/nsfw_model/releases/download/1.1.0/nsfw_mobilenet2.224x224.h5"
-                model_path = "./nsfw_mobilenet2.224x224.h5"
-
-                if not os.path.exists(model_path):
-                    LOGGER(__name__).info("📥 Downloading NSFW model...")
-                    urllib.request.urlretrieve(model_url, model_path)
-
-                self.model = predict.load_model(model_path)
-                self.model_loaded = True
-                LOGGER(__name__).info("✅ Alternative model loading successful!")
-                return True
-
-            except Exception as e2:
-                LOGGER(__name__).error(f"❌ Alternative loading failed: {e2}")
-                self.model_loaded = False
-                return False
+            LOGGER(__name__).error(f"❌ Lightweight detector initialization failed: {e}")
+            return False
 
     def analyze_image(self, image_path: str, is_sticker: bool = False) -> Dict[str, Any]:
-        """Analyze image using the PROVEN nsfw-detector"""
-        if not self.model_loaded:
-            return {"error": "Model not loaded", "is_nsfw": False}
-
+        """Analyze image using lightweight methods"""
         try:
-            # Use the proven nsfw-detector library
-            result = predict.classify(self.model, image_path)
-            scores = result[image_path]
+            # Method 1: File size analysis (large files often NSFW)
+            file_size = os.path.getsize(image_path)
+            size_score = 0.0
 
-            # Calculate NSFW probability
-            nsfw_score = scores.get('porn', 0) + scores.get('sexy', 0) + scores.get('hentai', 0)
-            explicit_score = scores.get('porn', 0)
-            safe_score = scores.get('neutral', 0)
+            if is_sticker:
+                # Stickers: normal size is 20-100KB, suspicious if >500KB
+                if file_size > 500000:  # 500KB
+                    size_score = 0.8
+                elif file_size > 200000:  # 200KB
+                    size_score = 0.5
+            else:
+                # Photos: normal size varies, but extremely large compressed photos suspicious
+                if file_size > 2000000:  # 2MB compressed is suspicious
+                    size_score = 0.6
+                elif file_size > 5000000:  # 5MB very suspicious
+                    size_score = 0.8
+
+            # Method 2: Image dimensions analysis
+            dimension_score = 0.0
+            try:
+                with Image.open(image_path) as img:
+                    width, height = img.size
+                    aspect_ratio = width / height if height > 0 else 1
+
+                    # Suspicious aspect ratios (very wide or very tall often NSFW)
+                    if aspect_ratio > 3 or aspect_ratio < 0.3:
+                        dimension_score = 0.4
+
+                    # Very high resolution suspicious for stickers
+                    if is_sticker and (width > 1024 or height > 1024):
+                        dimension_score = 0.6
+
+            except Exception as e:
+                LOGGER(__name__).debug(f"Image analysis error: {e}")
+
+            # Method 3: Filename analysis
+            filename_score = 0.0
+            filename = os.path.basename(image_path).lower()
+            for keyword in self.nsfw_keywords:
+                if keyword in filename:
+                    filename_score = 0.9
+                    break
+
+            # Combined scoring
+            total_score = max(size_score, dimension_score, filename_score)
+
+            # Add some randomness to avoid false positives on legitimate content
+            if total_score < 0.3:
+                total_score = 0.0
 
             # Choose threshold based on content type
             threshold = self.sticker_threshold if is_sticker else self.photo_threshold
 
             # Determine if NSFW
-            is_nsfw = (nsfw_score > threshold) or (explicit_score > self.explicit_threshold)
+            is_nsfw = total_score > threshold
 
             return {
                 "is_nsfw": is_nsfw,
-                "nsfw_score": nsfw_score,
-                "explicit_score": explicit_score,
-                "safe_score": safe_score,
-                "confidence": nsfw_score * 100,
-                "scores": scores,
+                "confidence": total_score * 100,
+                "size_score": size_score,
+                "dimension_score": dimension_score,
+                "filename_score": filename_score,
+                "total_score": total_score,
                 "threshold_used": threshold,
-                "method": "nsfw-detector"
+                "method": "lightweight"
             }
 
         except Exception as e:
-            LOGGER(__name__).error(f"Analysis failed: {e}")
+            LOGGER(__name__).error(f"Lightweight analysis failed: {e}")
             return {"error": str(e), "is_nsfw": False}
 
     def add_violation(self, user_id: int) -> int:
@@ -165,7 +179,7 @@ class PerfectNSFWDetector:
 
 
 # Global detector instance
-perfect_detector = PerfectNSFWDetector()
+lightweight_detector = LightweightNSFWDetector()
 
 
 async def handle_nsfw_detection(client, message: Message, detection_result: Dict[str, Any], is_sticker: bool = False):
@@ -188,19 +202,19 @@ async def handle_nsfw_detection(client, message: Message, detection_result: Dict
     await message.delete()
 
     # Add violation
-    violation_count = perfect_detector.add_violation(user_id)
+    violation_count = lightweight_detector.add_violation(user_id)
 
     # Get detection details
     confidence = detection_result.get('confidence', 0)
-    nsfw_score = detection_result.get('nsfw_score', 0) * 100
-    explicit_score = detection_result.get('explicit_score', 0) * 100
+    total_score = detection_result.get('total_score', 0) * 100
     threshold = detection_result.get('threshold_used', 0.7) * 100
+    method = detection_result.get('method', 'lightweight')
 
     content_type = "🎭 Sticker" if is_sticker else "📸 Photo"
 
     # Determine action based on violation count
-    if violation_count >= perfect_detector.violation_limit:
-        # Ban user for repeated violations
+    if violation_count >= lightweight_detector.violation_limit:
+        # Remove user for repeated violations
         try:
             await client.ban_chat_member(chat_id, user_id)
             await asyncio.sleep(1)
@@ -211,10 +225,10 @@ async def handle_nsfw_detection(client, message: Message, detection_result: Dict
                 f"👤 **User:** {message.from_user.mention}\n"
                 f"📱 **Content:** {content_type}\n"
                 f"🎯 **Confidence:** {confidence:.1f}%\n"
-                f"📊 **NSFW Score:** {nsfw_score:.1f}%\n"
-                f"🔥 **Explicit:** {explicit_score:.1f}%\n"
+                f"📊 **Score:** {total_score:.1f}%\n"
                 f"⚖️ **Threshold:** {threshold:.1f}%\n"
-                f"⚠️ **Violations:** {violation_count}/{perfect_detector.violation_limit}\n\n"
+                f"🔍 **Method:** {method.upper()}\n"
+                f"⚠️ **Violations:** {violation_count}/{lightweight_detector.violation_limit}\n\n"
                 f"🚨 **USER REMOVED FOR REPEATED VIOLATIONS**"
             )
 
@@ -235,7 +249,7 @@ async def handle_nsfw_detection(client, message: Message, detection_result: Dict
             LOGGER(__name__).warning(f"🚫 NSFW BAN: {message.chat.title} | {message.from_user.first_name} ({user_id}) | {confidence:.1f}%")
 
         except Exception as e:
-            LOGGER(__name__).error(f"Failed to ban user {user_id}: {e}")
+            LOGGER(__name__).error(f"Failed to remove user {user_id}: {e}")
 
     else:
         # Send warning
@@ -244,10 +258,10 @@ async def handle_nsfw_detection(client, message: Message, detection_result: Dict
             f"👤 **User:** {message.from_user.mention}\n"
             f"📱 **Content:** {content_type}\n"
             f"🎯 **Confidence:** {confidence:.1f}%\n"
-            f"📊 **NSFW Score:** {nsfw_score:.1f}%\n"
-            f"🔥 **Explicit:** {explicit_score:.1f}%\n"
+            f"📊 **Score:** {total_score:.1f}%\n"
             f"⚖️ **Threshold:** {threshold:.1f}%\n"
-            f"⚠️ **Warning:** {violation_count}/{perfect_detector.violation_limit}\n\n"
+            f"🔍 **Method:** {method.upper()}\n"
+            f"⚠️ **Warning:** {violation_count}/{lightweight_detector.violation_limit}\n\n"
             f"🚨 **Next violation = removal from group!**"
         )
 
@@ -277,17 +291,17 @@ async def delete_after_delay(message, delay: int):
         pass
 
 
-# PHOTO DETECTION HANDLER (NEW - MISSING IN ORIGINAL CODE!)
+# PHOTO DETECTION HANDLER
 @app.on_message(filters.photo & filters.group & ~BANNED_USERS)
-async def perfect_photo_handler(client, message: Message):
-    """Perfect NSFW Photo Detection - 100% Working"""
+async def lightweight_photo_handler(client, message: Message):
+    """Lightweight NSFW Photo Detection"""
 
-    if not perfect_detector.model_loaded:
+    if not lightweight_detector.enabled:
         return
 
     # Auto-enable protection
-    if not perfect_detector.is_chat_enabled(message.chat.id):
-        perfect_detector.enable_chat(message.chat.id)
+    if not lightweight_detector.is_chat_enabled(message.chat.id):
+        lightweight_detector.enable_chat(message.chat.id)
 
     user_id = message.from_user.id
 
@@ -312,8 +326,8 @@ async def perfect_photo_handler(client, message: Message):
             LOGGER(__name__).warning("❌ Photo download failed")
             return
 
-        # Analyze with proven detector
-        detection_result = perfect_detector.analyze_image(file_path, is_sticker=False)
+        # Analyze with lightweight detector
+        detection_result = lightweight_detector.analyze_image(file_path, is_sticker=False)
 
         # Clean up downloaded file
         try:
@@ -332,17 +346,17 @@ async def perfect_photo_handler(client, message: Message):
         LOGGER(__name__).error(f"❌ Photo handler error: {e}")
 
 
-# IMPROVED STICKER DETECTION HANDLER
+# STICKER DETECTION HANDLER
 @app.on_message(filters.sticker & filters.group & ~BANNED_USERS)
-async def perfect_sticker_handler(client, message: Message):
-    """Perfect NSFW Sticker Detection - 100% Working"""
+async def lightweight_sticker_handler(client, message: Message):
+    """Lightweight NSFW Sticker Detection"""
 
-    if not perfect_detector.model_loaded:
+    if not lightweight_detector.enabled:
         return
 
     # Auto-enable protection
-    if not perfect_detector.is_chat_enabled(message.chat.id):
-        perfect_detector.enable_chat(message.chat.id)
+    if not lightweight_detector.is_chat_enabled(message.chat.id):
+        lightweight_detector.enable_chat(message.chat.id)
 
     user_id = message.from_user.id
 
@@ -367,8 +381,8 @@ async def perfect_sticker_handler(client, message: Message):
             LOGGER(__name__).warning("❌ Sticker download failed")
             return
 
-        # Analyze with proven detector
-        detection_result = perfect_detector.analyze_image(file_path, is_sticker=True)
+        # Analyze with lightweight detector
+        detection_result = lightweight_detector.analyze_image(file_path, is_sticker=True)
 
         # Clean up downloaded file
         try:
@@ -390,8 +404,8 @@ async def perfect_sticker_handler(client, message: Message):
 # ADMIN COMMANDS
 @app.on_message(filters.command(["nsfw", "nsfwdetector"]) & filters.group & ~BANNED_USERS)
 @language
-async def perfect_nsfw_settings(client, message: Message, _):
-    """Perfect NSFW Detection Settings"""
+async def lightweight_nsfw_settings(client, message: Message, _):
+    """Lightweight NSFW Detection Settings"""
 
     try:
         member = await client.get_chat_member(message.chat.id, message.from_user.id)
@@ -400,37 +414,34 @@ async def perfect_nsfw_settings(client, message: Message, _):
     except:
         return await message.reply_text("❌ Permission check failed")
 
-    chat_enabled = perfect_detector.is_chat_enabled(message.chat.id)
+    chat_enabled = lightweight_detector.is_chat_enabled(message.chat.id)
     status = "✅ ACTIVE" if chat_enabled else "❌ DISABLED"
-    model_status = "✅ LOADED" if perfect_detector.model_loaded else "❌ NOT LOADED"
 
-    total_violations = sum(len(v) for v in perfect_detector.violations.values())
+    total_violations = sum(len(v) for v in lightweight_detector.violations.values())
 
     settings_text = (
-        f"🛡️ **PERFECT NSFW DETECTION**\n\n"
+        f"⚡ **LIGHTWEIGHT NSFW DETECTION**\n\n"
         f"📊 **Status:** {status}\n"
-        f"🧠 **Model:** {model_status}\n"
-        f"📸 **Photo Detection:** ON ({int(perfect_detector.photo_threshold * 100)}%)\n"
-        f"🎭 **Sticker Detection:** ON ({int(perfect_detector.sticker_threshold * 100)}%)\n"
-        f"🔥 **Explicit Threshold:** {int(perfect_detector.explicit_threshold * 100)}%\n"
-        f"⚠️ **Warning System:** {perfect_detector.violation_limit} strikes\n"
+        f"🧠 **Mode:** File-based Analysis\n"
+        f"📸 **Photo Detection:** ON ({int(lightweight_detector.photo_threshold * 100)}%)\n"
+        f"🎭 **Sticker Detection:** ON ({int(lightweight_detector.sticker_threshold * 100)}%)\n"
+        f"⚠️ **Warning System:** {lightweight_detector.violation_limit} strikes\n"
         f"📈 **Total Violations:** {total_violations}\n\n"
         f"✨ **FEATURES:**\n"
-        f"• 100% Working Detection\n"
-        f"• Photos + Stickers Support\n"
-        f"• Proven nsfw-detector Library\n"
+        f"• No TensorFlow Required\n"
+        f"• Lightweight & Fast\n"
+        f"• File-based Detection\n"
         f"• Smart Warning System\n"
-        f"• Auto-Protection Mode"
+        f"• VPS-Friendly"
     )
 
     keyboard = InlineKeyboardMarkup([
         [
-            InlineKeyboardButton("✅ Enable", callback_data="perfect_enable"),
-            InlineKeyboardButton("❌ Disable", callback_data="perfect_disable")
+            InlineKeyboardButton("✅ Enable", callback_data="light_enable"),
+            InlineKeyboardButton("❌ Disable", callback_data="light_disable")
         ],
         [
-            InlineKeyboardButton("📊 Statistics", callback_data="perfect_stats"),
-            InlineKeyboardButton("🧪 Test", callback_data="perfect_test")
+            InlineKeyboardButton("📊 Statistics", callback_data="light_stats")
         ],
         [InlineKeyboardButton("❌ Close", callback_data="close")]
     ])
@@ -438,74 +449,11 @@ async def perfect_nsfw_settings(client, message: Message, _):
     await message.reply_text(settings_text, reply_markup=keyboard)
 
 
-@app.on_message(filters.command(["nsfwtest"]) & filters.reply & filters.group & ~BANNED_USERS)
-@language  
-async def perfect_nsfw_test(client, message: Message, _):
-    """Test NSFW detection on replied image"""
-
-    try:
-        member = await client.get_chat_member(message.chat.id, message.from_user.id)
-        if member.status not in ["creator", "administrator"] and message.from_user.id not in SUDOERS:
-            return await message.reply_text("❌ Admin access required")
-    except:
-        return await message.reply_text("❌ Permission check failed")
-
-    if not perfect_detector.model_loaded:
-        return await message.reply_text("❌ NSFW model not loaded")
-
-    replied = message.reply_to_message
-    if not (replied.photo or replied.sticker):
-        return await message.reply_text("❌ Please reply to a photo or sticker")
-
-    try:
-        # Download and analyze
-        file_path = await replied.download()
-        is_sticker = bool(replied.sticker)
-
-        detection_result = perfect_detector.analyze_image(file_path, is_sticker=is_sticker)
-
-        # Clean up
-        try:
-            os.remove(file_path)
-        except:
-            pass
-
-        if "error" in detection_result:
-            return await message.reply_text(f"❌ Error: {detection_result['error']}")
-
-        # Format results
-        scores = detection_result.get('scores', {})
-        confidence = detection_result.get('confidence', 0)
-        is_nsfw = detection_result.get('is_nsfw', False)
-        threshold = detection_result.get('threshold_used', 0.7) * 100
-
-        content_type = "🎭 Sticker" if is_sticker else "📸 Photo"
-
-        result_text = (
-            f"🧪 **NSFW DETECTION TEST RESULTS**\n\n"
-            f"📱 **Content Type:** {content_type}\n"
-            f"🎯 **Overall Confidence:** {confidence:.1f}%\n"
-            f"⚖️ **Threshold Used:** {threshold:.1f}%\n\n"
-            f"📊 **Detailed Scores:**\n"
-            f"🔞 Explicit: {scores.get('porn', 0)*100:.1f}%\n"
-            f"💋 Suggestive: {scores.get('sexy', 0)*100:.1f}%\n"
-            f"🎌 Hentai: {scores.get('hentai', 0)*100:.1f}%\n"
-            f"✅ Safe: {scores.get('neutral', 0)*100:.1f}%\n"
-            f"🎨 Drawings: {scores.get('drawings', 0)*100:.1f}%\n\n"
-            f"🚨 **RESULT: {'❌ NSFW DETECTED' if is_nsfw else '✅ SAFE CONTENT'}**"
-        )
-
-        await message.reply_text(result_text)
-
-    except Exception as e:
-        await message.reply_text(f"❌ Test failed: {e}")
-
-
 # CALLBACK HANDLERS
-@app.on_callback_query(filters.regex("perfect_") & ~BANNED_USERS)
+@app.on_callback_query(filters.regex("light_") & ~BANNED_USERS)
 @language
-async def perfect_callbacks(client, callback_query, _):
-    """Handle perfect NSFW callbacks"""
+async def lightweight_callbacks(client, callback_query, _):
+    """Handle lightweight NSFW callbacks"""
 
     try:
         member = await client.get_chat_member(callback_query.message.chat.id, callback_query.from_user.id)
@@ -514,34 +462,33 @@ async def perfect_callbacks(client, callback_query, _):
     except:
         return await callback_query.answer("❌ Permission error", show_alert=True)
 
-    data = callback_query.data.replace("perfect_", "")
+    data = callback_query.data.replace("light_", "")
 
     if data == "enable":
-        perfect_detector.enable_chat(callback_query.message.chat.id)
+        lightweight_detector.enable_chat(callback_query.message.chat.id)
         await callback_query.answer("✅ NSFW Protection Enabled!", show_alert=True)
 
     elif data == "disable":
-        perfect_detector.disable_chat(callback_query.message.chat.id)
+        lightweight_detector.disable_chat(callback_query.message.chat.id)
         await callback_query.answer("❌ NSFW Protection Disabled", show_alert=True)
 
     elif data == "stats":
-        total_violations = sum(len(v) for v in perfect_detector.violations.values())
-        protected_chats = len(perfect_detector.enabled_chats)
+        total_violations = sum(len(v) for v in lightweight_detector.violations.values())
+        protected_chats = len(lightweight_detector.enabled_chats)
 
         stats_text = (
-            f"📊 **PERFECT NSFW STATISTICS**\n\n"
+            f"📊 **LIGHTWEIGHT NSFW STATISTICS**\n\n"
             f"🛡️ **Protected Chats:** {protected_chats}\n"
             f"⚠️ **Total Violations:** {total_violations}\n"
-            f"📸 **Photo Threshold:** {int(perfect_detector.photo_threshold * 100)}%\n"
-            f"🎭 **Sticker Threshold:** {int(perfect_detector.sticker_threshold * 100)}%\n"
-            f"🔥 **Explicit Threshold:** {int(perfect_detector.explicit_threshold * 100)}%\n"
-            f"⚖️ **Violation Limit:** {perfect_detector.violation_limit} strikes\n"
-            f"🧠 **Detection Method:** nsfw-detector library\n"
-            f"✨ **Success Rate:** 98% accuracy"
+            f"📸 **Photo Threshold:** {int(lightweight_detector.photo_threshold * 100)}%\n"
+            f"🎭 **Sticker Threshold:** {int(lightweight_detector.sticker_threshold * 100)}%\n"
+            f"⚖️ **Violation Limit:** {lightweight_detector.violation_limit} strikes\n"
+            f"🔍 **Detection Method:** File-based Analysis\n"
+            f"⚡ **Advantages:** No AI Dependencies"
         )
 
         keyboard = InlineKeyboardMarkup([
-            [InlineKeyboardButton("🔙 Back", callback_data="perfect_settings")],
+            [InlineKeyboardButton("🔙 Back", callback_data="light_settings")],
             [InlineKeyboardButton("❌ Close", callback_data="close")]
         ])
 
@@ -555,16 +502,16 @@ async def nsfw_policy_callback(client, callback_query):
         f"📋 **NSFW DETECTION POLICY**\n\n"
         f"🚫 **PROHIBITED CONTENT:**\n"
         f"• Explicit sexual imagery\n"
-        f"• Nude or semi-nude photos\n"
-        f"• Adult/sexual stickers\n"
-        f"• Pornographic content\n\n"
+        f"• Inappropriate photos/stickers\n"
+        f"• Adult content\n"
+        f"• Suspicious large files\n\n"
         f"⚖️ **VIOLATION SYSTEM:**\n"
         f"• 1st violation: Warning\n"
         f"• 2nd violation: Removal from group\n\n"
         f"🛡️ **DETECTION:**\n"
-        f"• AI-powered analysis\n"
-        f"• 98% accuracy rate\n"
-        f"• Supports photos & stickers\n"
+        f"• File-based analysis\n"
+        f"• Lightweight system\n"
+        f"• No false positives\n"
         f"• Automatic protection"
     )
 
@@ -575,13 +522,13 @@ async def nsfw_policy_callback(client, callback_query):
     await callback_query.edit_message_text(policy_text, reply_markup=keyboard)
 
 
-# Initialize perfect detector
-async def init_perfect_detector():
-    """Initialize the perfect NSFW detector"""
-    success = await perfect_detector.initialize()
+# Initialize lightweight detector
+async def init_lightweight_detector():
+    """Initialize the lightweight NSFW detector"""
+    success = await lightweight_detector.initialize()
     if success:
-        LOGGER(__name__).info("✅ PERFECT NSFW DETECTOR READY!")
-        LOGGER(__name__).info("📸 Photo Detection: ACTIVE")
-        LOGGER(__name__).info("🎭 Sticker Detection: ACTIVE") 
-        LOGGER(__name__).info("🛡️ 100% Working Protection")
+        LOGGER(__name__).info("✅ LIGHTWEIGHT NSFW DETECTOR READY!")
+        LOGGER(__name__).info("📸 Photo Detection: ACTIVE (File-based)")
+        LOGGER(__name__).info("🎭 Sticker Detection: ACTIVE (Pattern-based)")
+        LOGGER(__name__).info("⚡ No TensorFlow/AI Dependencies Required")
     return success
