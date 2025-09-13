@@ -48,7 +48,10 @@ wget
 yt-dlp==2025.8.27
 git+https://github.com/CertifiedCoders/youtube-search-python
 
-# PERFECT NSFW Detection (WORKING) - Replace the broken transformers dependencies
+# PERFECT NSFW Detection (WORKING) - latest compatible version
 nsfw-detector==1.1.1
-tensorflow>=2.8.0
-keras>=2.8.0
+
+# Optional: If you want to use full TensorFlow-based nsfw-detector features,
+# only include if your VPS supports Python 3.11+ and tensorflow/keras installation
+# tensorflow>=2.8.0
+# keras>=2.8.0
