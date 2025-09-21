@@ -5,6 +5,7 @@ asyncio
 bing_image_downloader
 bs4
 deepai
+dnspython
 edge-tts
 ffmpeg-python
 future
@@ -14,6 +15,7 @@ gpytranslate
 gtts
 heroku3
 httpx[http2]==0.28.1
+hachoir
 kurigram==2.2.12
 lexica-api
 motor
@@ -29,7 +31,9 @@ pydub
 pyfiglet
 pyshorteners
 python-dotenv
+pykeyboard
 python-whois
+pymongo==3.12.0
 pyyaml
 qrcode
 requests
@@ -39,6 +43,7 @@ spotipy
 telegraph
 tgcrypto
 unidecode
+uvloop;sys_platform != "win32"
 wget
 yt-dlp==2025.9.5
 git+https://github.com/CertifiedCoders/youtube-search-python
