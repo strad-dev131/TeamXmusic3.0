@@ -501,7 +501,7 @@ class YouTubeAPI:
         async def audio_dl(vid_id):
             try:
                 if not YT_API_KEY:
-                    logger.error("API KEY not set in config, Set API Key you got from @EliteSid_Xd")
+                    logger.error("API KEY not set in config, Set API Key you got from @tgmusic_apibot")
                     return None
                 if not YTPROXY:
                     logger.error("API Endpoint not set in config\nPlease set a valid endpoint for YTPROXY_URL in config.")
@@ -563,7 +563,7 @@ class YouTubeAPI:
         async def video_dl(vid_id):
             try:
                 if not YT_API_KEY:
-                    logger.error("API KEY not set in config, Set API Key you got from @EliteSid_Xd")
+                    logger.error("API KEY not set in config, Set API Key you got from @tgmusic_apibot")
                     return None
                 if not YTPROXY:
                     logger.error("API Endpoint not set in config\nPlease set a valid endpoint for YTPROXY_URL in config.")
