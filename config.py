@@ -72,9 +72,9 @@ STRING5 = getenv("STRING_SESSION5")
 
 # ── Media assets ───────────────────────────────────────────────────────────────
 START_VIDS = [
-    "https://files.catbox.moe/sdj6vg.mp4",
-    "https://files.catbox.moe/n0nsx3.mp4",
-    "https://files.catbox.moe/2cb00a.mp4",
+    "https://strad-dev131.github.io/TeamXsrc/mp4/Music%20BOT.mp4",
+    "https://strad-dev131.github.io/TeamXsrc/mp4/Music%20BOT%20(1).mp4",
+    "https://strad-dev131.github.io/TeamXsrc/mp4/MUSIC%20BOT%20(2).mp4",
 ]
 STICKERS = [
     "CAACAgUAAx0Cd6nKUAACASBl_rnalOle6g7qS-ry-aZ1ZpVEnwACgg8AAizLEFfI5wfykoCR4h4E",
