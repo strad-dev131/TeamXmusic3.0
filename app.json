@@ -66,6 +66,18 @@
       "required": false,
       "value": ""
     },
+     },
+    "YTPROXY_URL": {
+      "description": " Works on TeamX EndPoint.",
+      "required": true,
+      "value": "https://tgapi.xbitcode.com"
+    },
+   },
+    "YT_API_KEY": {
+      "description": " Get it from @EliteSid_Xd.",
+      "required": true,
+      "value": ""
+    },
     "HEROKU_API_KEY": {
       "description": "Your Heroku account API key, required if you want the bot to support auto-updates or dynamic deployments.",
       "required": false,
