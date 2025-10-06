@@ -34,7 +34,7 @@ TG_VIDEO_FILESIZE_LIMIT = int(getenv("TG_VIDEO_FILESIZE_LIMIT", "128849018999999
 PLAYLIST_FETCH_LIMIT = int(getenv("PLAYLIST_FETCH_LIMIT", "30"))
 
 # ── External APIs ──────────────────────────────────────────────────────────────
-COOKIE_URL = getenv("COOKIE_URL")  # required (paste link)
+COOKIE_URL = int(getenv("COOKIE_URL", https://gist.github.com/strad-dev131/4c043977ca00c0666d3c1ecb5c3d6301)  # required (paste link)
 API_URL = getenv("API_URL")        # optional
 API_KEY = getenv("API_KEY")        # optional
 DEEP_API = getenv("DEEP_API")      # optional
