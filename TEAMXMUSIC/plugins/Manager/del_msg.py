@@ -14,7 +14,7 @@ import asyncio
 from pyrogram import filters
 from pyrogram.types import (
     InlineKeyboardMarkup, InlineKeyboardButton,
-    CallbackQuery, Message, ChatInviteLink, ChatPrivileges
+    CallbackQuery, Message, ChatInviteLink
 )
 from pyrogram.enums import ChatMemberStatus
 from pyrogram.errors import (
