@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM python:3.10-slim
 RUN apt-get update && \
     apt-get install -y --no-install-recommends git ffmpeg build-essential libssl-dev && \
     rm -rf /var/lib/apt/lists/*
