@@ -18,7 +18,7 @@ httpx[http2]==0.27.2
 hachoir
 kurigram==2.2.12
 lexica-api
-motor>=3.3.1
+motor
 nekosbest
 numpy
 opencv-python
