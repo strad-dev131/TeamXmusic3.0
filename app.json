@@ -1,6 +1,6 @@
 {
   "name": "TEAM X MUSIC",
-  "description": "Team X MUSIC is a powerful and versatile Telegram Music Player Bot built with Python, utilizing Pyrogram and Py-Tgcalls libraries for high-quality group voice chat music streaming. This bot offers seamless playback, custom download server integration, and AI-enhanced features for a premium user experience.",
+  "description": "An advanced Telegram music bot built using Pyrogram and Py-TgCalls with YouTube, Spotify, and SoundCloud streaming support. Developed by TeamXBots.",
   "logo": "https://files.catbox.moe/timwpo.jpg",
   "keywords": [
     "python3",
@@ -12,81 +12,164 @@
   ],
   "env": {
     "API_ID": {
-      "description": "Telegram API ID, available at https://my.telegram.org. Required to connect the bot to Telegram servers.",
+      "description": "Telegram API ID (from https://my.telegram.org)",
       "required": true,
       "value": ""
     },
     "API_HASH": {
-      "description": "Telegram API Hash, available at https://my.telegram.org. Required alongside API ID.",
+      "description": "Telegram API Hash (from https://my.telegram.org)",
       "required": true,
       "value": ""
     },
     "BOT_TOKEN": {
-      "description": "Bot Token from BotFather after creating your Telegram bot.",
-      "required": true,
-      "value": ""
-    },
-    "MONGO_DB_URI": {
-      "description": "MongoDB database connection URI, used for storing user and bot-related data. Get it from https://cloud.mongodb.com.",
+      "description": "Bot token from BotFather",
       "required": true,
       "value": ""
     },
     "OWNER_ID": {
-      "description": "Your Telegram numeric user ID (use @userinfobot to find it). Multiple IDs can be separated by a space.",
+      "description": "Numeric Telegram user ID of bot owner",
       "required": true,
       "value": ""
     },
-    "STRING_SESSION": {
-      "description": "Pyrogram v2 session string. Generate it securely from https://telegram.tools/session-string-generator#pyrogram.",
-      "value": "",
-      "required": true
+    "OWNER_USERNAME": {
+      "description": "Telegram username of the bot owner (without @)",
+      "required": false,
+      "value": "EliteSid_Xd"
+    },
+    "BOT_USERNAME": {
+      "description": "Bot username (without @)",
+      "required": false,
+      "value": "TeamXmusicbot"
+    },
+    "BOT_NAME": {
+      "description": "Display name of the bot",
+      "required": false,
+      "value": "˹𝐓ᴇᴀᴍ ✘ 𝙼ᴜsɪᴄ˼ ♪"
+    },
+    "ASSUSERNAME": {
+      "description": "Assistant bot username",
+      "required": false,
+      "value": "TeamxAssistant"
+    },
+    "MONGO_DB_URI": {
+      "description": "MongoDB connection URI for storing user data",
+      "required": true,
+      "value": ""
     },
     "LOGGER_ID": {
-      "description": "Chat ID of your log group where the bot sends important logs. Make sure the bot is admin in that group.",
+      "description": "Chat ID of log group where bot sends logs",
       "required": true,
       "value": ""
     },
     "COOKIE_URL": {
-      "description": "Direct raw link (from Batbin or Pastebin) to your YouTube cookies.txt file for better download support.",
-      "required": false,
+      "description": "Pastebin or Batbin cookie link (for YouTube) — required. Format: https://batbin.me/<id>",
+      "required": true,
       "value": ""
     },
     "API_URL": {
-      "description": "(Optional) URL of a custom API server used for music downloads or other services.",
+      "description": "Main API URL for YouTube streaming endpoint",
       "required": false,
-      "value": ""
+      "value": "https://api.thequickearn.xyz"
+    },
+    "VIDEO_API_URL": {
+      "description": "API URL for YouTube video endpoint",
+      "required": false,
+      "value": "https://api.video.thequickearn.xyz"
     },
     "API_KEY": {
-      "description": "(Optional) API Key associated with your custom music download server (used with API_URL).",
+      "description": "API key for QuickEarn API (get from https://panel.thequickearn.xyz)",
       "required": false,
       "value": ""
     },
     "DEEP_API": {
-      "description": "(Optional) DeepAI API key for enabling AI-powered features. Get it from https://deepai.org/.",
+      "description": "DeepAI API key for optional AI integration",
       "required": false,
       "value": ""
     },
-     },
-    "YTPROXY_URL": {
-      "description": " Works on TeamX EndPoint.",
-      "required": true,
-      "value": "https://tgapi.xbitcode.com"
-    },
-   },
-    "YT_API_KEY": {
-      "description": " Get it from @EliteSid_Xd.",
-      "required": true,
-      "value": ""
-    },
     "HEROKU_API_KEY": {
-      "description": "Your Heroku account API key, required if you want the bot to support auto-updates or dynamic deployments.",
+      "description": "Heroku account API key for updates",
       "required": false,
       "value": ""
     },
     "HEROKU_APP_NAME": {
-      "description": "The name of your Heroku app. Required if using HEROKU_API_KEY for deployments.",
+      "description": "Heroku app name (required for updates)",
       "required": false,
       "value": ""
+    },
+    "UPSTREAM_REPO": {
+      "description": "GitHub repo link for updates",
+      "required": false,
+      "value": "https://github.com/strad-dev131/TeamXmusic3.0"
+    },
+    "UPSTREAM_BRANCH": {
+      "description": "Git branch to pull updates from",
+      "required": false,
+      "value": "Main"
+    },
+    "GIT_TOKEN": {
+      "description": "GitHub token (if repo is private)",
+      "required": false,
+      "value": ""
+    },
+    "SPOTIFY_CLIENT_ID": {
+      "description": "Spotify Client ID (for Spotify integration)",
+      "required": false,
+      "value": "22b6125bfe224587b722d6815002db2b"
+    },
+    "SPOTIFY_CLIENT_SECRET": {
+      "description": "Spotify Client Secret",
+      "required": false,
+      "value": "c9c63c6fbf2f467c8bc68624851e9773"
+    },
+    "STRING_SESSION": {
+      "description": "Pyrogram session string for assistant account",
+      "required": true,
+      "value": ""
+    },
+    "ASSISTANT_LEAVE_TIME": {
+      "description": "Assistant auto-leave time in seconds (default 3600)",
+      "required": false,
+      "value": "3600"
+    },
+    "DURATION_LIMIT": {
+      "description": "Max stream duration in minutes",
+      "required": false,
+      "value": "300"
+    },
+    "SONG_DOWNLOAD_DURATION": {
+      "description": "Max song download duration in seconds",
+      "required": false,
+      "value": "1200"
+    },
+    "SONG_DOWNLOAD_DURATION_LIMIT": {
+      "description": "Max limit duration for long songs",
+      "required": false,
+      "value": "1800"
+    },
+    "TG_AUDIO_FILESIZE_LIMIT": {
+      "description": "Audio filesize limit in bytes",
+      "required": false,
+      "value": "157286400"
+    },
+    "TG_VIDEO_FILESIZE_LIMIT": {
+      "description": "Video filesize limit in bytes",
+      "required": false,
+      "value": "1288490189999999"
+    },
+    "PLAYLIST_FETCH_LIMIT": {
+      "description": "Limit of songs fetched in playlist",
+      "required": false,
+      "value": "30"
+    },
+    "SUPPORT_CHANNEL": {
+      "description": "Telegram channel for bot updates",
+      "required": false,
+      "value": "https://t.me/TeamXUpdate"
+    },
+    "SUPPORT_CHAT": {
+      "description": "Telegram group for support",
+      "required": false,
+      "value": "https://t.me/TeamsXchat"
     }
   },
   "buildpacks": [
