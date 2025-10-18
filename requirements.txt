@@ -17,7 +17,6 @@ heroku3
 httpx[http2]==0.27.2
 kurigram==2.2.13
 hachoir
-kurigram==2.2.12
 lexica-api
 motor
 nekosbest
@@ -49,3 +48,5 @@ wget
 yt-dlp==2025.10.14
 youtube-search-python
 youtube-search
+https://github.com/KurimuzonAkuma/pyrogram/archive/v2.1.23.zip
+
