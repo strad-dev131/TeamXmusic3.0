@@ -45,7 +45,7 @@ tgcrypto
 unidecode
 uvloop;sys_platform != "win32"
 wget
-yt-dlp==2025.10.14
+yt-dlp==2025.11.12
 youtube-search-python
 youtube-search
 https://github.com/KurimuzonAkuma/pyrogram/archive/v2.1.23.zip
