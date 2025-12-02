@@ -33,7 +33,7 @@ pyshorteners
 python-dotenv
 pykeyboard
 python-whois
-pymongo==3.12.0
+pymongo==4.15.5
 pyyaml
 qrcode
 requests
